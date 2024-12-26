@@ -1,0 +1,26 @@
+<% layout('./layouts/layout.eta', { title: 'Topics' }) %>
+
+<h1>Topics</h1>
+<ul>
+  <% it.topics.forEach(topic => { %>
+    <li>
+      <a href="/topics/<%= topic.id %>"><%= topic.name %></a>
+
+        <form method="POST" action="/topics/<%= topic.id %>/delete">
+          <button type="submit">Delete</button>
+        </form>
+      <% if (it.user && it.user.isAdmin) { %>
+      
+      <% } %>
+    </li>
+  <% }) %>
+</ul>
+
+<% if (it.user && it.user.isAdmin) { %>
+  <h2>Add a Topic</h2>
+  <form method="POST" action="/topics">
+    <label for="name">Topic Name</label>
+    <input type="text" id="name" name="name" required>
+    <button type="submit">Add Topic</button>
+  </form>
+<% } %>
