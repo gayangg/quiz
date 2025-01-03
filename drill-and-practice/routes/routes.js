@@ -1,37 +1,60 @@
 import { Router } from "../deps.js";
 import * as mainController from "./controllers/mainController.js";
 import * as topicsController from "./controllers/topicsController.js";
-import * as questionController from "./controllers/questionsController.js";
+import * as questionsController from "./controllers/questionsController.js";
 import * as authController from "./controllers/authController.js";
 import * as answersController from "./controllers/answersController.js";
+import * as askingQuizControler from "./controllers/askingQuizControler.js";
+import * as apiController from "./controllers/apiController.js";
 
 const router = new Router();
-
 router.get("/", mainController.showMain);
 
-// Topics
-router.get("/topics", topicsController.listTopics);
-router.post("/topics", topicsController.addTopic);
-router.get("/topics/:id", topicsController.listTopicsbyId);
+// create/list topics
 
-// Asking questions
-router.get("/quiz", topicsController.listTopics);
-router.get("/quiz/:tId", questionController.getQuestionsByTId);
-// router.get("/quiz/:tId/questions/:qId");
-// router.post("/quiz/:tId/questions/:qId/options/:oId");
-// router.get("/quiz/:tId/questions/:qId/correct");
-// router.get("/quiz/:tId/questions/:qId/incorrect");
+//router.get("/topics", topicsController.getTopicsWithPagination);
+router.get("/topics", topicsController.listTopics); //done
+router.post("/topics", topicsController.addTopic); //done
+router.get("/topics/:id", questionsController.getQuestionsByTId); //done
+router.post("/topics/:id/delete", topicsController.deleteTopic); //done
 
-// Login
-// router.get("/auth/login", authController.login);
-// router.post("/auth/login", authController.login);
+// create/list questions for a selected topic
+router.get("/topics/:id/questions", questionsController.getQuestionsByTId); //done
+router.post("/topics/:id/questions", questionsController.addQuestion); //done
+router.get("/topics/:id/questions/:qId", askingQuizControler.getQuestionAndOptions); //done
 
-// Registration
-// router.get("/auth/register", );
-// router.post("/auth/register", );
+// remove questions
+router.post("/topics/:id/questions/:qId/delete", questionsController.deleteQuestion); //done
 
-// router.post("/chores/:id/claim", choreController.claimChore);
-// router.post("/chores/:id/complete", choreController.completeChore);
+// add answers/options
+//router.post("/topics/:id/questions/:qId/options", askingQuizControler.handleAnswerSelection);
+router.post("/topics/:id/questions/:qId/options", askingQuizControler.addAnswerOption);     // not complete
+
+
+
+// remove answer options
+router.post("/topics/:id/questions/:qId/options/:oId/delete", askingQuizControler.deleteAnswerOption);       // not complete
+
+// ask/list questions
+router.get("/quiz", askingQuizControler.getTopicsForQuiz);                  //done
+router.get("/quiz/:tId", askingQuizControler.getRandomQuestionForTopic);    //done
+router.get("/quiz/:tId/questions/:qId", askingQuizControler.getQuestionAndOptions); //done
+router.post("/quiz/:tId/questions/:qId/options/:oId", askingQuizControler.handleAnswerSelection); 
+router.get("/quiz/:tId/questions/:qId/correct", askingQuizControler.verifyAnswer); //done
+router.get("/quiz/:tId/questions/:qId/incorrect", askingQuizControler.verifyAnswer); //done
+
+// login
+router.get("/auth/login", authController.showLoginForm);
+router.post("/auth/login", authController.handleLogin);
+
+// register user
+router.get("/auth/register", authController.showRegistrationForm); //done
+router.post("/auth/register", authController.handleRegisteration); //done
+
+// API
+//router.get("/api", apiController.getApi);
+router.get("/api/questions/random", apiController.getRandomQuiz);
+router.post("/api/questions/answer", apiController.getRandomQuizAnswer);
 
 export { router };
 
